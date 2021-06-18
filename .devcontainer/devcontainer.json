@@ -1,0 +1,24 @@
+{
+	"name": "ASB-Hack",
+	"build": { "dockerfile": "Dockerfile" },
+	"runArgs": [ "--init", "--privileged" ],
+	"overrideCommand": false,
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { },
+
+	"remoteUser": "codespace",
+
+	"forwardPorts": [],
+
+	// Install extensions
+	"extensions": [
+		"davidanson.vscode-markdownlint",
+		"gruntfuggly.todo-tree",
+		"ms-azuretools.vscode-docker",
+		"humao.rest-client"
+	],
+
+	// Run Bash script in .devcontainer directory
+	"postCreateCommand": "/bin/bash .devcontainer/post-install.sh"
+}

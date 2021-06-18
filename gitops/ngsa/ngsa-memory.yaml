@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngsa-memory
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: ngsa-memory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngsa-memory
+  template:
+    metadata:
+      labels:
+        app: ngsa-memory
+        version: beta-0514-1915
+        deploy: 21-05-14-19-15-24
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+        - name: app
+          image: retaildevcrew/ngsa-app:beta
+          imagePullPolicy: Always
+
+          args: 
+          - --in-memory
+          - --prometheus
+          - --url-prefix
+          - /memory
+          - --zone
+          - az-eastus2
+          - --region
+          - East
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+      nodeSelector:
+        agentpool: npuser01
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa-memory
+  namespace: ngsa
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: ngsa-memory
