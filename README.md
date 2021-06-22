@@ -353,11 +353,11 @@ curl https://${ASB_DOMAIN}/memory/version
 
 > Challenges do not have step-by-step instructions
 
-- [Create a dashboard visualizing blocked traffic](./challenges/redirect-http-to-https/README.md)
+- [Create a dashboard visualizing blocked traffic](./challenges/blocked-traffic-dashboard/README.md)
 
 ### Challenge 2
 
-- [Redirect `HTTP` requests to `HTTPS` in App Gateway](./challenges/blocked-traffic-dashboard/README.md)
+- [Redirect `HTTP` requests to `HTTPS` in App Gateway](./challenges/redirect-http-to-https/README.md)
 
 ### Challenge 3
 
