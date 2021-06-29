@@ -48,7 +48,7 @@ RUN mkdir -p $HOME/.ssh && \
     echo "alias ipconfig='ip -4 a show eth0 | grep inet | sed \"s/inet//g\" | sed \"s/ //g\" | cut -d / -f 1'" >> $HOME/.bashrc && \
     echo 'export PIP=$(ipconfig | tail -n 1)' >> $HOME/.bashrc && \
     echo 'complete -F __start_kubectl k' >> $HOME/.bashrc && \
-    dotnet tool install -g --version 2.0.0-beta2 webvalidate && \
+    dotnet tool install -g webvalidate && \
     git config --global core.whitespace blank-at-eol,blank-at-eof,space-before-tab && \
     git config --global pull.rebase false && \
     git config --global init.defaultbranch main && \
