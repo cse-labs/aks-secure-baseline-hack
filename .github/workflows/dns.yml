@@ -1,0 +1,30 @@
+name: setup-asb-dns
+
+on: [push]
+
+jobs:
+
+  setup-asb-dns:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Azure CLI script file
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.24.2
+        inlineScript: |
+          BRANCH_NAME=${GITHUB_REF#refs/*/}
+          ENV_FILE="${GITHUB_WORKSPACE}/${BRANCH_NAME}.asb.env"
+          if [ -f $ENV_FILE ]
+          then
+            source $ENV_FILE
+            $GITHUB_WORKSPACE/.github/workflows/create-dns-record.sh
+          fi

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngsa-ghcr
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: ngsa-ghcr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngsa-ghcr
+  template:
+    metadata:
+      labels:
+        app: ngsa-ghcr
+        version: beta
+        deploy: 21-06-07-19-15-24
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/retaildevcrews/ngsa-app:beta
+          imagePullPolicy: Always
+
+          args: 
+          - --in-memory
+          - --prometheus
+          - --url-prefix
+          - /ghcr
+          - --zone
+          - az-eastus2
+          - --region
+          - East
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+      nodeSelector:
+        agentpool: npuser01
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa-ghcr
+  namespace: ngsa
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: ngsa-ghcr

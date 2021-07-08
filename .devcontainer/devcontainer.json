@@ -1,0 +1,24 @@
+{
+	"name": "ASB-Hack",
+	"image": "ghcr.io/retaildevcrews/kind:beta",
+	"runArgs": [ "--init", "--privileged" ],
+	"overrideCommand": false,
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { },
+
+	"remoteUser": "vscode",
+
+	"forwardPorts": [],
+
+	// Install extensions
+	"extensions": [
+		"davidanson.vscode-markdownlint",
+		"gruntfuggly.todo-tree",
+		"ms-azuretools.vscode-docker",
+		"humao.rest-client"
+	],
+
+	// Run Bash script in .devcontainer directory
+	"postCreateCommand": "/bin/bash .devcontainer/post-install.sh"
+}

@@ -1,0 +1,94 @@
+# TODO - remove or merge into readme
+
+# save to .bashrc
+echo "export APP_GW_CERT=\$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb --query value -o tsv | tr -d '\n')" >> $HOME/.bashrc
+echo "export INGRESS_CERT=\$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb-crt --query value -o tsv | base64 | tr -d '\n')" >> $HOME/.bashrc
+echo "export INGRESS_KEY=\$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb-key --query value -o tsv | base64 | tr -d '\n')" >> $HOME/.bashrc
+
+# set env vars
+export APP_GW_CERT=$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb --query value -o tsv | tr -d '\n')
+export INGRESS_CERT=$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb-crt --query value -o tsv | base64 | tr -d '\n')
+export INGRESS_KEY=$(az keyvault secret show --subscription bartr-wcnp --vault-name rdc-certs -n aks-sb-key --query value -o tsv | base64 | tr -d '\n')
+
+# check certs
+echo $APP_GW_CERT
+echo $INGRESS_CERT
+echo $INGRESS_KEY
+
+# make directories
+mkdir -p $HOME/.kube
+mkdir -p $HOME/bin
+mkdir -p $HOME/.local/bin
+mkdir -p $HOME/.k9s
+mkdir -p $HOME/.dotnet/tools
+
+kubectl completion bash > $HOME/.local/kubectl
+
+# add aliases
+echo "" >> $HOME/.bashrc
+echo "# aliases" >> $HOME/.bashrc
+echo "alias k='kubectl'" >> $HOME/.bashrc
+echo "alias kga='kubectl get all'" >> $HOME/.bashrc
+echo "alias kgaa='kubectl get all --all-namespaces'" >> $HOME/.bashrc
+echo "alias kaf='kubectl apply -f'" >> $HOME/.bashrc
+echo "alias kdelf='kubectl delete -f'" >> $HOME/.bashrc
+echo "alias kl='kubectl logs'" >> $HOME/.bashrc
+echo "alias kccc='kubectl config current-context'" >> $HOME/.bashrc
+echo "alias kcgc='kubectl config get-contexts'" >> $HOME/.bashrc
+echo "alias kj='kubectl exec -it jumpbox -- bash -l'" >> $HOME/.bashrc
+echo "alias kje='kubectl exec -it jumpbox -- '" >> $HOME/.bashrc
+
+echo "" >> $HOME/.bashrc
+echo "# env vars" >> $HOME/.bashrc
+echo "export FLUX_FORWARD_NAMESPACE=flux-cd" >> $HOME/.bashrc
+echo 'export PATH=$PATH:~/.dotnet/tools' >> $HOME/.bashrc
+
+echo "" >> $HOME/.bashrc
+echo "#kubectl completion" >> $HOME/.bashrc
+echo 'source $HOME/.local/kubectl' >> $HOME/.bashrc
+echo 'complete -F __start_kubectl k' >> $HOME/.bashrc
+
+echo "" >> $HOME/.bashrc
+# echo "PS1='\[\033[01;32m\]\u@azure \[\033[01;34m\]\$PWD \[\033[01;36m\]\$(__git_ps1 '[%s]')\[\033[00m\] \\\$ '" >> $HOME/.bashrc
+echo "PS1='\[\033[01;32m\]\$(az account show --query name -o tsv) \[\033[01;34m\]\$PWD \[\033[01;36m\]\$(__git_ps1 '[%s]')\[\033[00m\] \\\$ '" >> $HOME/.bashrc
+
+
+# install fluxctl
+curl -L https://github.com/fluxcd/flux/releases/download/1.14.2/fluxctl_linux_amd64 -o $HOME/.local/bin/fluxctl
+chmod +x $HOME/.local/bin/fluxctl
+
+# install k9s
+curl -Lo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.24.2/k9s_Linux_x86_64.tar.gz
+tar xvzf k9s.tar.gz -C $HOME/.local/bin
+rm k9s.tar.gz
+
+# install envsubst
+curl -Lo $HOME/.local/bin/envsubst https://bartr.co/bin/envsubst.bin
+chmod +x $HOME/.local/bin/envsubst
+
+
+
+# deploy
+az deployment group create -g $ASB_RG_HUB -f networking/hub-default.json -p location=${ASB_LOCATION} --query name
+export ASB_VNET_HUB_ID=$(az deployment group show -g $ASB_RG_HUB -n hub-default --query properties.outputs.hubVnetId.value -o tsv)
+az deployment group create -g $ASB_RG_SPOKE -f networking/spoke-BU0001A0008.json -p location=${ASB_LOCATION} hubVnetResourceId="${ASB_VNET_HUB_ID}" --query name
+export ASB_NODEPOOLS_SUBNET_ID=$(az deployment group show -g $ASB_RG_SPOKE -n spoke-BU0001A0008 --query properties.outputs.nodepoolSubnetResourceIds.value -o tsv)
+az deployment group create -g $ASB_RG_HUB -f networking/hub-regionA.json -p location=${ASB_LOCATION} nodepoolSubnetResourceIds="['${ASB_NODEPOOLS_SUBNET_ID}']" --query name
+export ASB_SPOKE_VNET_ID=$(az deployment group show -g $ASB_RG_SPOKE -n spoke-BU0001A0008 --query properties.outputs.clusterVnetResourceId.value -o tsv)
+az deployment group create -g $ASB_RG_CORE \
+  -f cluster-stamp.json \
+  -n cluster-${ASB_TEAM_NAME} \
+  -p location=${ASB_LOCATION} \
+     geoRedundancyLocation=${ASB_GEO_LOCATION} \
+     asbTeamName=${ASB_TEAM_NAME} \
+     asbDomain=${ASB_DOMAIN} \
+     asbDnsZone=${ASB_DNS_ZONE} \
+     targetVnetResourceId=${ASB_SPOKE_VNET_ID} \
+     clusterAdminAadGroupObjectId=${ASB_CLUSTER_ADMIN_ID} \
+     k8sControlPlaneAuthorizationTenantId=${ASB_TENANT_ID} \
+     appGatewayListenerCertificate=${APP_GW_CERT} \
+     aksIngressControllerCertificate="$(echo $INGRESS_CERT | base64 -d)" \
+     aksIngressControllerKey="$(echo $INGRESS_KEY | base64 -d)" \
+     --query name
+
+./saveenv.sh -y
