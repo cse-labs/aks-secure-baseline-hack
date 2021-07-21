@@ -622,7 +622,7 @@
                                 "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
                             },
                             "frontendPort": {
-                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/apw-frontend-ports')]"
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/port_80')]"
                             },
                             "protocol": "Http",
                             "requireServerNameIndication": false                            
