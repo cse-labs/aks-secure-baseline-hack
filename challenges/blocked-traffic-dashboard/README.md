@@ -15,7 +15,7 @@ There are multiple locations where traffic is blocked for security reasons. Crea
 ### Core Resource Group
 
 - The logs have `AzureDiagnostics` entries
-- To filter on entries that contain insights on what the WAF (Web Application Firewall) is evaluating, matching, and blocking, use the `ApplicationGatewayFirewallLog` category,
+- To filter on entries that contain insights on what the WAF (Web Application Firewall) is evaluating, matching, and blocking, use the `ApplicationGatewayAccessLog` category,
 
 ### Hub Resource Group
 
