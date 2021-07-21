@@ -889,7 +889,8 @@
         {
             "type": "Microsoft.ContainerRegistry/registries",
             "apiVersion": "2020-11-01-preview",
-            "name": "[variables('defaultAcrName')]",
+           "name": "[variables('defaultAcrName')]",
+           // "name" : "acraks47bpqm7f5j4sq",
             "location": "[parameters('location')]",
             "sku": {
                 "name": "Premium"
