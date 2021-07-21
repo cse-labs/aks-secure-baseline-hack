@@ -16,7 +16,7 @@ For security reasons, when the App Gateway receives an HTTP request, redirect to
 ### Test Manual Configuration
 
 ```bash
-# Test HTTP redirect for a 302
+# Test HTTP redirect for a 301
 curl -i http://${ASB_DOMAIN}/memory/healthz
 ```
 
@@ -35,7 +35,7 @@ curl -i http://${ASB_DOMAIN}/memory/healthz
 
 - Deploy the network
 - Create AKS
-- Test HTTP redirect for a 302
+- Test HTTP redirect for a 301
 
 ```bash
 curl -i http://${ASB_DOMAIN}/memory/healthz
