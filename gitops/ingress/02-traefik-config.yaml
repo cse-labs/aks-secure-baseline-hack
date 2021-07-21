@@ -5,8 +5,8 @@ metadata:
   namespace: ingress
 spec:
   type: 0
-  resourceID: 
-  clientID: 
+  resourceID: /subscriptions/37c2e377-09bc-405e-abbe-3d991eba61cd/resourceGroups/rg-jotest2-core/providers/Microsoft.ManagedIdentity/userAssignedIdentities/podmi-ingress-controller
+  clientID: d2189013-78e0-441a-9fa2-fea9a6feb005
 ---
 apiVersion: aadpodidentity.k8s.io/v1
 kind: AzureIdentityBinding
@@ -27,7 +27,7 @@ spec:
   provider: azure
   parameters:
     usePodIdentity: "true"
-    keyvaultName:  
+    keyvaultName: kv-aks-yvv3pt6j3ytni 
     objects:  |
       array:
         - |
