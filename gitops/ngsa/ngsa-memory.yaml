@@ -24,7 +24,6 @@ spec:
         - name: app
           image: ghcr.io/retaildevcrews/ngsa-app:beta
           imagePullPolicy: Always
-
           args: 
           - --in-memory
           - --prometheus
