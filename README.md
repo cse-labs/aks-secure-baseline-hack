@@ -19,7 +19,7 @@
 > The OpenHack requires Codespaces and bash
 > If you have dotfiles that default to zsh, make sure to use bash as your terminal
 
-- The `AKS Secure Baseline` repo for the OpenHack is at [github/retaildevcrews/asb-spark](https://github.com/retaildevcrews/asb-spark)
+- The `AKS Secure Baseline` repo for the OpenHack is at [github//asb-spark/openhack](https://github.com/asb-spark/openhack)
 - Open this repo in your web browser
 - Create a new `Codespace` in this repo
   - If the `fork option` appears, you need to request permission to the repo
