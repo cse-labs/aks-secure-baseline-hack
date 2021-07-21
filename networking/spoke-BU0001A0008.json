@@ -184,6 +184,20 @@
                         }
                     },
                     {
+                        "name": "Port_80",
+                        "properties": {
+                            "description": "Allow ALL http traffic. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 900,
+                            "direction": "Inbound"
+                        }
+                    },        
+                    {
                         "name": "DenyAllInBound",
                         "properties": {
                             "protocol": "*",
