@@ -524,6 +524,12 @@
                         "properties": {
                             "port": 443
                         }
+                    },
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "port": 80
+                        }
                     }
                 ],
                 "autoscaleConfiguration": {
@@ -558,6 +564,24 @@
                             "minServers": 0,
                             "match": {
                             }
+                        }
+                    }
+                ],
+                "redirectConfigurations": [
+                    {
+                        "name": "routing-rule-2",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-https')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "[concat(variables('apwResourceId'), '/requestRoutingRules/routing-rule-2')]"
+                                }
+                            ]
                         }
                     }
                 ],
@@ -607,6 +631,20 @@
                             ],
                             "requireServerNameIndication": true
                         }
+                    },
+                    {
+                        "name": "listener-http",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/port_80')]"
+                            },
+                            "protocol": "Http",
+                            "hostNames": [],
+                            "requireServerNameIndication": false
+                        }
                     }
                 ],
                 "requestRoutingRules": [
@@ -622,6 +660,18 @@
                             },
                             "backendHttpSettings": {
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "routing-rule-2",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-http')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/redirectConfigurations/routing-rule-2')]"
                             }
                         }
                     }
