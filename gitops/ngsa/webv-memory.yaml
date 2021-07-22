@@ -18,7 +18,7 @@ spec:
       containers:
         - name: app
           image: acraksdg6rerhg6uumi.azurecr.io/webvalidate:beta
-          imagePullPolicy: OnFailure
+          imagePullPolicy: Always
 
           args: 
           - --sleep 
