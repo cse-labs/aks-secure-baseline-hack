@@ -524,7 +524,14 @@
                         "properties": {
                             "port": 443
                         }
+                    },
+                    {
+                        "name": "http-redirect-frontend-ports",
+                        "properties": {
+                            "port": 80
+                        }
                     }
+
                 ],
                 "autoscaleConfiguration": {
                     "minCapacity": 0,
@@ -607,6 +614,24 @@
                             ],
                             "requireServerNameIndication": true
                         }
+                    },
+                    {
+                        "name": "Spark-listener",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/http-redirect-frontend-ports')]"
+                            },
+                            "protocol": "Http",
+                            "sslCertificate": {
+                                "id": "[concat(variables('apwResourceId'), '/sslCertificates/', variables('agwName'), '-ssl-certificate')]"
+                            },
+                            "hostName": "[parameters('asbDomain')]",
+                            "hostNames": [
+                            ]
+                        }
                     }
                 ],
                 "requestRoutingRules": [
@@ -623,6 +648,31 @@
                             "backendHttpSettings": {
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
                             }
+                        }
+                    },
+                    {
+                        "Name": "http_to_https_redirect",
+                        "properties": {
+                            "RuleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/Spark-listener')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/redirectConfigurations/Spark-listener')]"
+                            }
+                        }
+                    }
+                ], 
+                "redirectConfigurations": [
+                    {
+                        "name": "Spark-listener",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-https')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true
                         }
                     }
                 ]
