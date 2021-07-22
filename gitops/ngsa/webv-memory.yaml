@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: webv
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: webv
@@ -22,8 +22,8 @@ spec:
 
           args: 
           - --sleep 
-          - '2' 
-          - --run-loop 
+          - '1000' 
+          #- --run-loop 
           - --verbose 
           - --log-format 
           - Json 
