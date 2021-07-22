@@ -374,7 +374,7 @@
                 }
             ]
         },
-{
+        {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2020-06-01",
             "name": "[variables('acrPrivateDnsZonesName')]",
@@ -524,6 +524,12 @@
                         "properties": {
                             "port": 443
                         }
+                    },
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "port": 80
+                        }
                     }
                 ],
                 "autoscaleConfiguration": {
@@ -607,6 +613,20 @@
                             ],
                             "requireServerNameIndication": true
                         }
+                    },
+                    {
+                        "name": "listener-http",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/port_80')]"
+                            },
+                            "protocol": "Http",
+                            "hostNames": [],
+                            "requireServerNameIndication": false
+                        }
                     }
                 ],
                 "requestRoutingRules": [
@@ -623,6 +643,36 @@
                             "backendHttpSettings": {
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
                             }
+                        }
+                    },
+                    {
+                        "name": "redirect-http",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-http')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/redirectConfigurations/redirect-http')]"
+                            }
+                        }
+                    }
+                ],
+                "redirectConfigurations": [
+                    {
+                        "name": "redirect-http",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-https')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "[concat(variables('apwResourceId'), '/requestRoutingRules/redirect-http')]"
+                                }
+                            ]
                         }
                     }
                 ]
@@ -1168,7 +1218,7 @@
                     "authorizedIPRanges": "[parameters('clusterAuthorizedIPRanges')]",
                     "enablePrivateCluster": false
                 },
-                "podIdentityProfile": { 
+                "podIdentityProfile": {
                     "enabled": false, /* This feature is currently in preview and will eventually replace the aad-pod-identity configuration set up by hand in this reference implementation */
                     "userAssignedIdentities": [],
                     "userAssignedIdentityExceptions": []

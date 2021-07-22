@@ -142,6 +142,20 @@
             "properties": {
                 "securityRules": [
                     {
+                        "name": "Allow80InBound",
+                        "properties": {
+                            "description": "Allow ALL web traffic into 80. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationPortRange": "80",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
                         "name": "Allow443InBound",
                         "properties": {
                             "description": "Allow ALL web traffic into 443. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
@@ -180,19 +194,6 @@
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 120,
-                            "direction": "Inbound"
-                        }
-                    },
-                    {
-                        "name": "DenyAllInBound",
-                        "properties": {
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "sourceAddressPrefix": "*",
-                            "destinationPortRange": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Deny",
-                            "priority": 1000,
                             "direction": "Inbound"
                         }
                     },
