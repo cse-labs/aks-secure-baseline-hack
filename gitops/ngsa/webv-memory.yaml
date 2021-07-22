@@ -18,15 +18,19 @@ spec:
       containers:
         - name: app
           image: acraksdg6rerhg6uumi.azurecr.io/webvalidate:beta
-          imagePullPolicy: Always
+          imagePullPolicy: OnFailure
 
           args: 
-          - --sleep 1000 
+          - --sleep 
+          - '1000' 
           - --run-loop 
           - --verbose 
-          - --log-format Json 
-          - --server https://${ASB_TEAM_NAME}.aks-sb.com 
-          - --files memory-benchmark.json
+          - --log-format 
+          - Json 
+          - --server 
+          - https://eneros1.aks-sb.com 
+          - --files
+          - memory-benchmark.json
 
        
           resources:
