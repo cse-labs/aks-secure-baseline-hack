@@ -1,39 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ngsa-ghcr
+  name: webv
   namespace: ngsa
   labels:
-    app.kubernetes.io/name: ngsa-ghcr
+    app.kubernetes.io/name: webv
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ngsa-ghcr
+      app: webv
   template:
     metadata:
       labels:
-        app: ngsa-ghcr
-        version: beta
-        deploy: 21-06-07-19-15-24
+        app: webv
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8080'
     spec:
       containers:
         - name: app
-          image: ghcr.io/retaildevcrews/ngsa-app:beta
+          image: acraksdg6rerhg6uumi.azurecr.io/webvalidate:beta
           imagePullPolicy: Always
 
           args: 
-          - --in-memory
-          - --prometheus
-          - --url-prefix
-          - /ghcr
-          - --zone
-          - az-eastus2
-          - --region
-          - East
+          - --sleep 1000 
+          - --run-loop 
+          - --verbose 
+          - --log-format Json 
+          - --server https://${ASB_TEAM_NAME}.aks-sb.com 
+          - --files memory-benchmark.json
 
           ports:
             - name: http
@@ -55,7 +51,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngsa-ghcr
+  name: webv
   namespace: ngsa
 spec:
   type: ClusterIP
@@ -65,4 +61,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: ngsa-ghcr
+    app: webv
