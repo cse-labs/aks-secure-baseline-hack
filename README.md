@@ -531,3 +531,25 @@ az aks disable-addons --addons azure-policy -g rg-bu0001a0008-$ASB_TEAM_NAME -n 
 az deployment group delete -g $ASB_RG_CORE -n cluster-${ASB_TEAM_NAME}
 
 ```
+
+
+### Challenge 
+
+## Step 1 
+az acr import \
+  --name acraks36xzovff4lg2u \
+  --source ghcr.io/retaildevcrews/ngsa-app:beta \
+  --image ngsa-app:beta
+
+
+
+az acr repository list --name acraks36xzovff4lg2u --resource-group rg-dovives1-core
+
+## Step 2 
+Modified following line 25 
+``image: acraks36xzovff4lg2u.azurecr.io/ngsa-app:beta `` 
+
+kubectl apply -f ./gitops/ngsa/ngsa-memory.yaml
+
+kubectl describe pods ngsa-memory-5b865f96b5-l7v6s -n ngsa
+
