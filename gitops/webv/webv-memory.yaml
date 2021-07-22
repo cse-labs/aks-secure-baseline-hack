@@ -14,9 +14,6 @@ spec:
     metadata:
       labels:
         app: webv
-      annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '8080'
     spec:
       containers:
         - name: app
@@ -31,34 +28,4 @@ spec:
           - --server https://${ASB_TEAM_NAME}.aks-sb.com 
           - --files memory-benchmark.json
 
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-
-          resources:
-            limits:
-              cpu: 500m
-              memory: 512Mi
-            requests:
-              cpu: 500m
-              memory: 512Mi
-
-      nodeSelector:
-        agentpool: npuser01
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webv
-  namespace: ngsa
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    app: webv
+    
