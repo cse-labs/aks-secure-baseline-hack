@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngsa-memory-ingress
+  namespace: ngsa
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+    # defines controller implementing this ingress resource: https://docs.microsoft.com/en-us/azure/dev-spaces/how-to/ingress-https-traefik
+    # ingress.class annotation is being deprecated in Kubernetes 1.18: https://kubernetes.io/docs/concepts/services-networking/ingress/#deprecated-annotation
+    # For backwards compatibility, when this annotation is set, precedence is given over the new field ingressClassName under spec.
+    kubernetes.io/ingress.class: traefik-internal
+    # kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.options: default
+    traefik.ingress.kubernetes.io/router.middlewares: ngsa-stripprefix@file
+spec:
+  # ingressClassName: "traefik-internal"
+  tls:
+  - hosts:
+      - discocat.aks-sb.com
+        # it is possible to opt for certificate management strategy with dedicated
+        # certificates for each TLS SNI route.
+        # In this Rereference Implementation for the sake of simplicity we use a
+        # wildcard default certificate added at Ingress Controller configuration level which is *.example.com
+        # secretName: <bu0001a0008-00-example-com-tls-secret>
+  rules:
+  - host: discocat.aks-sb.com
+    http:
+      paths:
+      - path: /memory
+        pathType: Prefix
+        backend:
+          service:
+            name: ngsa-memory
+            port:
+              number: 8080
