@@ -553,3 +553,50 @@ kubectl apply -f ./gitops/ngsa/ngsa-memory.yaml
 
 kubectl describe pods ngsa-memory-5b865f96b5-l7v6s -n ngsa
 
+## Optional step 3 
+
+Copied the ngsa-ghcr.yaml file from the Challenge folder into the ngsa folder. 
+
+Run 
+
+``fluxctl sync``
+
+``kubectl get replicasets -A``
+``kubectl describe replicasets ngsa-ghcr-84bb44f844 -n ngsa``
+
+
+Modified the Azure Policy with the following regex 
+
+acraks36xzovff4lg2u.azurecr.io/.+$|mcr.microsoft.com/.+$|docker.io/fluxcd/flux.+$|docker.io/weaveworks/kured.+$|docker.io/retaildevcrew/.+$|docker.io/library/.+$|ghcr.io/.+$|.githubusercontent.com/.+$
+
+
+Check in the cluster your policy has been updated :
+``kubectl get k8sazurecontainerallowedimages.constraints.gatekeeper.sh``
+``kubectl describe k8sazurecontainerallowedimages.constraints.gatekeeper.sh azurepolicy-container-allowed-images-f3fe78e8d1e991b3b80d``
+
+
+Re Sync
+``fluxctl sync``
+
+Run 
+ ``kubectl logs ngsa-ghcr-84bb44f844-6z8cl -n ngsa``
+
+ "Error from server (BadRequest): container "app" in pod "ngsa-ghcr-84bb44f844-6z8cl" is waiting to start: trying and failing to pull image"
+
+
+To get more details : 
+
+``kubectl describe pod ngsa-ghcr-84bb44f844-6z8cl -n ngsa ``
+
+Now check the FW logs with the following Logs KQL query : 
+
+``AzureDiagnostics
+| where Category == "AzureFirewallApplicationRule"
+| order by TimeGenerated desc
+| where msg_s contains "ghcr" 
+``
+
+
+"22/07/2021, 14:33:46.420	/SUBSCRIPTIONS/1619BFAC-1484-4DA0-95CC-DEC25338E962/RESOURCEGROUPS/RG-DOVIVES1-NETWORKING-HUB/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/FW-NORTHEUROPE	AzureFirewallApplicationRule	RG-DOVIVES1-NETWORKING-HUB	1619bfac-1484-4da0-95cc-dec25338e962	MICROSOFT.NETWORK	FW-NORTHEUROPE	AZUREFIREWALLS	AzureFirewallApplicationRuleLog							HTTPS request from 10.240.0.132:47450 to ghcr.io:443. Action: Deny. No rule matched. Proceeding with default action	AzureDiagnostics	/subscriptions/1619bfac-1484-4da0-95cc-dec25338e962/resourcegroups/rg-dovives1-networking-hub/providers/microsoft.network/azurefirewalls/fw-northeurope	c6054b9b-b8b1-48f9-8c53-3890a1efb295	Azure	
+" 
+
