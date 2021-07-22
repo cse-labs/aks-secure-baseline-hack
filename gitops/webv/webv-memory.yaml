@@ -28,4 +28,15 @@ spec:
           - --server https://${ASB_TEAM_NAME}.aks-sb.com 
           - --files memory-benchmark.json
 
-    
+       
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+      nodeSelector:
+        agentpool: npuser01
+
