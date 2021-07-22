@@ -134,30 +134,22 @@
         "managedIdentityOperatorRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830')]",
         "virtualMachineContributorRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
         "readerRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-
         "subRgUniqueString": "[uniqueString('aks', subscription().subscriptionId, resourceGroup().id)]",
-
         "nodeResourceGroupName": "[concat('rg-', parameters('asbTeamName'), '-nodepools')]",
         "clusterName": "[concat('aks-', variables('subRgUniqueString'))]",
         "logAnalyticsWorkspaceName": "[concat('la-', variables('clusterName'))]",
         "containerInsightsSolutionName": "[concat('ContainerInsights(', variables('logAnalyticsWorkspaceName'),')')]",
         "defaultAcrName": "[concat('acraks', variables('subRgUniqueString'))]",
-
         "vNetResourceGroup": "[split(parameters('targetVnetResourceId'),'/')[4]]",
         "vnetName": "[split(parameters('targetVnetResourceId'),'/')[8]]",
         "vnetNodePoolSubnetResourceId": "[concat(parameters('targetVnetResourceId'), '/subnets/snet-clusternodes')]",
         "vnetIngressServicesSubnetResourceId": "[concat(parameters('targetVnetResourceId'), '/subnets/snet-cluster-ingressservices')]",
-
         "agwName": "[concat('apw-', variables('clusterName'))]",
         "apwResourceId": "[resourceId('Microsoft.Network/applicationGateways', variables('agwName'))]",
-
         "acrPrivateDnsZonesName": "privatelink.azurecr.io",
         "akvPrivateDnsZonesName": "privatelink.vaultcore.azure.net",
-
         "clusterControlPlaneIdentityName": "[concat('mi-', variables('clusterName'), '-controlplane')]",
-
         "keyVaultName": "[concat('kv-', variables('clusterName'))]",
-
         "policyResourceIdAKSLinuxRestrictive": "/providers/Microsoft.Authorization/policySetDefinitions/42b8ef37-b724-4e24-bbc8-7a7708edfe00",
         "policyResourceIdEnforceHttpsIngress": "/providers/Microsoft.Authorization/policyDefinitions/1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d",
         "policyResourceIdEnforceInternalLoadBalancers": "/providers/Microsoft.Authorization/policyDefinitions/3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e",
@@ -374,7 +366,7 @@
                 }
             ]
         },
-{
+        {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2020-06-01",
             "name": "[variables('acrPrivateDnsZonesName')]",
@@ -524,6 +516,12 @@
                         "properties": {
                             "port": 443
                         }
+                    },
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "port": 80
+                        }
                     }
                 ],
                 "autoscaleConfiguration": {
@@ -556,8 +554,7 @@
                             "unhealthyThreshold": 3,
                             "pickHostNameFromBackendHttpSettings": true,
                             "minServers": 0,
-                            "match": {
-                            }
+                            "match": {}
                         }
                     }
                 ],
@@ -603,9 +600,22 @@
                                 "id": "[concat(variables('apwResourceId'), '/sslCertificates/', variables('agwName'), '-ssl-certificate')]"
                             },
                             "hostName": "[parameters('asbDomain')]",
-                            "hostNames": [
-                            ],
+                            "hostNames": [],
                             "requireServerNameIndication": true
+                        }
+                    },
+                    {
+                        "name": "listener-http",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/port_80')]"
+                            },
+                            "protocol": "Http",
+                            "hostNames": [],
+                            "requireServerNameIndication": false
                         }
                     }
                 ],
@@ -623,6 +633,36 @@
                             "backendHttpSettings": {
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
                             }
+                        }
+                    },
+                    {
+                        "name": "apw-routing-rules-http",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-http')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/redirectConfigurations/apw-routing-rules-http')]"
+                            }
+                        }
+                    }
+                ],
+                "redirectConfigurations": [
+                    {
+                        "name": "apw-routing-rules-http",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-https')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "[concat(variables('apwResourceId'), '/requestRoutingRules/apw-routing-rules-http')]"
+                                }
+                            ]
                         }
                     }
                 ]
@@ -843,8 +883,7 @@
                     ]
                 },
                 "actions": {
-                    "actionGroups": [
-                    ]
+                    "actionGroups": []
                 },
                 "enabled": true,
                 "description": "All azure advisor alerts"
@@ -1168,7 +1207,7 @@
                     "authorizedIPRanges": "[parameters('clusterAuthorizedIPRanges')]",
                     "enablePrivateCluster": false
                 },
-                "podIdentityProfile": { 
+                "podIdentityProfile": {
                     "enabled": false, /* This feature is currently in preview and will eventually replace the aad-pod-identity configuration set up by hand in this reference implementation */
                     "userAssignedIdentities": [],
                     "userAssignedIdentityExceptions": []

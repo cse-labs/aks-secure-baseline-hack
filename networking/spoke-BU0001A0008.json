@@ -156,6 +156,20 @@
                         }
                     },
                     {
+                        "name": "Allow80InBound",
+                        "properties": {
+                            "description": "Allow ALL web traffic into 80. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationPortRange": "80",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 201,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
                         "name": "AllowControlPlaneInBound",
                         "properties": {
                             "description": "Allow Azure Control Plane in. (https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups)",
