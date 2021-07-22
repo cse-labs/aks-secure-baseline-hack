@@ -524,8 +524,15 @@
                         "properties": {
                             "port": 443
                         }
-                    }
-                ],
+                    },
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "port": 80
+                        }
+                    }]
+                    ,
+                            
                 "autoscaleConfiguration": {
                     "minCapacity": 0,
                     "maxCapacity": 10
@@ -607,6 +614,28 @@
                             ],
                             "requireServerNameIndication": true
                         }
+                    },
+                    {
+                        "name": "myHttpListener",
+                     
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "frontendIPConfiguration": {
+                                "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/frontendIPConfigurations/apw-frontend-ip-configuration"
+                            },
+                            "frontendPort": {
+                                "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/frontendPorts/port_80"
+                            },
+                            "protocol": "Http",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/requestRoutingRules/http-listener-rule"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/httpListeners"
                     }
                 ],
                 "requestRoutingRules": [
@@ -624,8 +653,22 @@
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
                             }
                         }
-                    }
-                ]
+                    },
+                    {
+                        "name": "http-listener-rule",
+                        "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/requestRoutingRules/http-listener-rule",
+                        "etag": "W/\"9a1fe9fc-d963-4558-bec0-03f34e54210b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/httpListeners/myHttpListener"
+                            },
+                            "redirectConfiguration": {
+                                "id": "/subscriptions/ce8e7a90-6ff0-4074-8417-a55e6cac276f/resourceGroups/rg-gpillai1-core/providers/Microsoft.Network/applicationGateways/apw-aks-yfihpm5umnrcm/redirectConfigurations/http-listener-rule"
+                            }
+                        }
+                    }]
             },
             "resources": [
                 {
