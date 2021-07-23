@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webv
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: webv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webv
+  template:
+    metadata:
+      labels:
+        app: webv
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+        - name: app
+          image: acrakslgiwkoc6nzn3o.azurecr.io/webvalidate:beta
+          imagePullPolicy: Always
+
+          args: 
+          - --sleep 
+          - '1000' 
+          - --run-loop 
+          - --verbose 
+          - --log-format
+          - Json 
+          - --server 
+          - https://abassey.aks-sb.com 
+          - --files 
+          - memory-benchmark.json
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+      nodeSelector:
+        agentpool: npuser01
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webv
+  namespace: ngsa
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: webv
