@@ -32,7 +32,7 @@ spec:
           - --log-format 
           - Json 
           - --server 
-          - https://${ASB_TEAM_NAME}.aks-sb.com 
+          - https://diperuma.aks-sb.com 
           - --files 
           - memory-benchmark.json
           ports:
