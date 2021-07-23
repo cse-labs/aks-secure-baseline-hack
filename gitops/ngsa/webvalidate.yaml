@@ -23,7 +23,7 @@ spec:
 
           args: 
           - --sleep
-          - "1000"
+          - "20"
           - --run-loop
           - --verbose
           - --log-format
