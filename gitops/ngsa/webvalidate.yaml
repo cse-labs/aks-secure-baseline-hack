@@ -21,7 +21,17 @@ spec:
           image: ghcr.io/retaildevcrews/webvalidate:beta
           imagePullPolicy: Always
 
-          args: --sleep 1000 --run-loop --verbose --log-format Json --server https://nbudidh1.aks-sb.com --files memory-benchmark.json
+          args: 
+          - --sleep
+          - "1000"
+          - --run-loop
+          - --verbose
+          - --log-format
+          - Json
+          - --server 
+          - https://nbudidh1.aks-sb.com
+          - --files
+          - memory-benchmark.json
           
           ports:
             - name: http
