@@ -144,11 +144,11 @@
                     {
                         "name": "Allow443InBound",
                         "properties": {
-                            "description": "Allow ALL web traffic into 443. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
+                            "description": "Allow ALL web traffic into 443 and 80. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "sourceAddressPrefix": "Internet",
-                            "destinationPortRange": "443",
+                            "destinationPortRange": "443,80",
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 101,

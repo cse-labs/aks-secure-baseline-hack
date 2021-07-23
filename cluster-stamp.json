@@ -374,7 +374,7 @@
                 }
             ]
         },
-{
+        {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2020-06-01",
             "name": "[variables('acrPrivateDnsZonesName')]",
@@ -524,6 +524,12 @@
                         "properties": {
                             "port": 443
                         }
+                    },
+                    {
+                        "name": "http-port",
+                        "properties": {
+                            "port": 80
+                        }
                     }
                 ],
                 "autoscaleConfiguration": {
@@ -607,6 +613,24 @@
                             ],
                             "requireServerNameIndication": true
                         }
+                    },
+                    {
+                        "name": "redirect-http",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendIPConfigurations/apw-frontend-ip-configuration')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('apwResourceId'), '/frontendPorts/http-port')]"
+                            },
+                            "protocol": "Http",
+                            "sslCertificate": {
+                                "id": "[concat(variables('apwResourceId'), '/sslCertificates/', variables('agwName'), '-ssl-certificate')]"
+                            },
+                            "hostName": "[parameters('asbDomain')]",
+                            "hostNames": [
+                            ]
+                        }
                     }
                 ],
                 "requestRoutingRules": [
@@ -623,6 +647,31 @@
                             "backendHttpSettings": {
                                 "id": "[concat(variables('apwResourceId'), '/backendHttpSettingsCollection/aks-ingress-backendpool-httpsettings')]"
                             }
+                        }
+                    },
+                    {
+                        "Name": "redirect-rule",
+                        "properties": {
+                            "RuleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/redirect-http')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('apwResourceId'), '/redirectConfigurations/redirect-http')]"
+                            }
+                        }
+                    }
+                ],
+                "redirectConfigurations": [
+                    {
+                        "name": "redirect-http",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('apwResourceId'), '/httpListeners/listener-https')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true
                         }
                     }
                 ]
