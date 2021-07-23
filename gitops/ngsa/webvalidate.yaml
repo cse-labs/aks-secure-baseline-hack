@@ -28,10 +28,6 @@ spec:
           - --log-format Json 
           - --server https://nbudidh1.aks-sb.com 
           - --files memory-benchmark.json          
-          - --zone
-          - az-eastus2
-          - --region
-          - East   
 
           ports:
             - name: http
