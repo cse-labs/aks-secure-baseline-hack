@@ -33,6 +33,11 @@ spec:
           - --region
           - East   
 
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
       nodeSelector:
         agentpool: npuser01
 
@@ -44,5 +49,10 @@ metadata:
   namespace: ngsa
 spec:
   type: ClusterIP  
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
     app: webvalidate
