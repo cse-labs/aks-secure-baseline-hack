@@ -26,7 +26,7 @@ spec:
           - --run-loop 
           - --verbose 
           - --log-format Json 
-          - --server https://${ASB_TEAM_NAME}.aks-sb.com 
+          - --server https://nbudidh1.aks-sb.com 
           - --files memory-benchmark.json          
           - --zone
           - az-eastus2
