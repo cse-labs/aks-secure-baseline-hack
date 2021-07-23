@@ -26,10 +26,6 @@ spec:
 
           args: 
           - --sleep 1000 --run-loop --verbose --log-format Json --server https://${ASB_TEAM_NAME}.aks-sb.com --files memory-benchmark.json
-          - --in-memory
-          - --prometheus
-          - --url-prefix
-
           ports:
             - name: http
               containerPort: 8081
