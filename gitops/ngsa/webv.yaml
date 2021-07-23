@@ -34,3 +34,15 @@ spec:
 
           ports:
             - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+      nodeSelector:
+        agentpool: npuser01
+
+
