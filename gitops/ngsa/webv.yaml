@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-validate
+  namespace: ngsa
+  labels:
+    app: web-validate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webv
+  template:
+    metadata:
+      labels:
+        app: webv
+    spec:
+      containers:
+        - name: webv
+          image: acraksemicd7jarlvoe.azurecr.io/webvalidate:beta
+          imagePullPolicy: Always
+
+          args: 
+          - --sleep
+          - "1000"
+          - --run-loop
+          - --verbose 
+          - --log-format 
+          - Json 
+          - --server 
+          - https://bcurran.aks-sb.com 
+          - --files 
+          - memory-benchmark.json
+
+          ports:
+            - containerPort: 80
