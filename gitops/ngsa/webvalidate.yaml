@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webvalidate
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: webvalidate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webvalidate
+  template:
+    metadata:
+      labels:
+        app: webvalidate
+        version: beta              
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/retaildevcrews/webvalidate:beta
+          imagePullPolicy: Always
+
+          args: 
+          - --sleep 1000 
+          - --run-loop 
+          - --verbose 
+          - --log-format Json 
+          - --server https://${ASB_TEAM_NAME}.aks-sb.com 
+          - --files memory-benchmark.json          
+          - --zone
+          - az-eastus2
+          - --region
+          - East   
+
+      nodeSelector:
+        agentpool: npuser01
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webvalidate
+  namespace: ngsa
+spec:
+  type: ClusterIP  
+  selector:
+    app: webvalidate
