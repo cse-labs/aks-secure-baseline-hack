@@ -12,14 +12,24 @@ There are multiple locations where traffic is blocked for security reasons. Crea
 
 ## Log Analytics Workspace
 
+### Create Blocked Traffic
+
+```bash
+curl -i http://${ASB_DOMAIN}/memory/healthz
+```
+
 ### Core Resource Group
 
 - The logs have `AzureDiagnostics` entries
-- To filter on entries that contain insights on what the WAF (Web Application Firewall) is evaluating, matching, and blocking, use the `ApplicationGatewayAccessLog` category,
+- Query for distinct `Category` values
+- Filter entries on `Category` value(s) that contain insights on what the Application Gateway is evaluating, matching, and blocking
+- Create graph and add to dashboard
 
 ### Hub Resource Group
 
 - The logs have `AzureDiagnostics` entries
-- To filter on resource logs for firewall application rules, use the `AzureFirewallApplicationRule` category
-- To filter on resource logs for firewall network rules, use the `AzureFirewallNetworkRule` category
-- To filter on logs where the NSG (Network Security Group) rules were applied, use the `NetworkSecurityGroupRuleEvent` category
+- Query for distinct `Category` values
+- Filter entries on `Category` value(s) that contain insights on the following
+  - Firewall rules
+  - Network Security Group rules
+- Create graph(s) and add to dashboard
