@@ -2026,7 +2026,7 @@
                 "policyDefinitionId": "[variables('policyResourceIdEnforceImageSource')]",
                 "parameters": {
                     "allowedContainerImagesRegex": {
-                        "value": "[concat(variables('defaultAcrName'),'.azurecr.io/.+$|mcr.microsoft.com/.+$|docker.io/fluxcd/flux.+$|docker.io/weaveworks/kured.+$|docker.io/retaildevcrew/.+$|docker.io/library/.+$')]"
+                        "value": "[concat(variables('defaultAcrName'),'.azurecr.io/.+$|mcr.microsoft.com/.+$|ghcr.io/.+$|docker.io/fluxcd/flux.+$|docker.io/weaveworks/kured.+$|docker.io/retaildevcrew/.+$|docker.io/library/.+$')]"
                     },
                     "excludedNamespaces": {
                         "value": [
