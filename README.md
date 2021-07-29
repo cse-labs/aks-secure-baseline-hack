@@ -532,15 +532,15 @@ git branch -D $ASB_TEAM_NAME
 ```bash
 
 # stop your cluster
-az aks stop --no-wait -n $ASB_AKS_NAME -g rg-bu0001a0008-$ASB_TEAM_NAME
-az aks show -n $ASB_AKS_NAME -g rg-bu0001a0008-$ASB_TEAM_NAME --query provisioningState -o tsv
+az aks stop --no-wait -g $ASB_RG_CORE -n $ASB_AKS_NAME
+az aks show -g $ASB_RG_CORE -n $ASB_AKS_NAME --query provisioningState -o tsv
 
 # start your cluster
-az aks start --no-wait --name $ASB_AKS_NAME -g rg-bu0001a0008-$ASB_TEAM_NAME
-az aks show -n $ASB_AKS_NAME -g rg-bu0001a0008-$ASB_TEAM_NAME --query provisioningState -o tsv
+az aks start --no-wait -g $ASB_RG_CORE -n $ASB_AKS_NAME
+az aks show -g $ASB_RG_CORE -n $ASB_AKS_NAME --query provisioningState -o tsv
 
 # disable policies (last resort for debugging)
-az aks disable-addons --addons azure-policy -g rg-bu0001a0008-$ASB_TEAM_NAME -n $ASB_AKS_NAME
+az aks disable-addons --addons azure-policy -g $ASB_RG_CORE -n $ASB_AKS_NAME
 
 # delete your AKS cluster (keep your network)
 ### TODO - this doesn't work completely
