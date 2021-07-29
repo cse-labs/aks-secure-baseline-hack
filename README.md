@@ -203,7 +203,7 @@ echo $ASB_CLUSTER_ADMIN_ID
 ```bash
 
 # set GitOps repo
-export ASB_GIT_REPO=$(git remote get-url origin)
+export ASB_GIT_REPO=https://github.com/asb-spark/openhack.git
 export ASB_GIT_BRANCH=$ASB_TEAM_NAME
 export ASB_GIT_PATH=gitops
 
