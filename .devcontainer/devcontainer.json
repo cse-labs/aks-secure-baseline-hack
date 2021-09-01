@@ -1,6 +1,6 @@
 {
 	"name": "ASB-Hack",
-	"image": "ghcr.io/retaildevcrews/kind:beta",
+	"image": "ghcr.io/cse-labs/kind:latest",
 	"runArgs": [ "--init", "--privileged" ],
 	"overrideCommand": false,
 
