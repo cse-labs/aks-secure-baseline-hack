@@ -1,6 +1,6 @@
 {
 	"name": "ASB-Hack",
-	"image": "ghcr.io/cse-labs/kind:latest",
+	"image": "ghcr.io/cse-labs/k3d:latest",
 	"runArgs": [ "--init", "--privileged" ],
 	"overrideCommand": false,
 
