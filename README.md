@@ -324,7 +324,7 @@ cat templates/traefik-config.yaml | envsubst > gitops/ingress/02-traefik-config.
 
 # app ingress
 rm -f gitops/ngsa/ngsa-ingress.yaml
-cat templates/ngsa-ingress.yaml | envsubst > gitops/ngsa/ngsa-ingress.yaml
+cat templates/ngsa-ingressRoute.yaml | envsubst > gitops/ngsa/ngsa-ingressRoute.yaml
 
 # GitOps (flux)
 rm -f flux.yaml

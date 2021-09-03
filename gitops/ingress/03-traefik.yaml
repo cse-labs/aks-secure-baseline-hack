@@ -99,7 +99,7 @@ data:
       # prevent Traefik from collecting and sending stats from production
       sendanonymoususage = false
     [log]
-      level = "ERROR"
+      level = "DEBUG"
       format = "json"
     [api]
       dashboard = false
@@ -113,18 +113,20 @@ data:
         watch = true
       # Traefik provider that supports the native Kubernetes Ingress specification
       # and derives the corresponding dynamic configuration from it. https://kubernetes.io/docs/concepts/services-networking/ingress/
-      [providers.kubernetesingress]
-        ingressClass = "traefik-internal"
-        namespaces = ["ingress", "ngsa", "tiny"]
-        [providers.kubernetesIngress.ingressEndpoint]
-          publishedService = "ingress/traefik-ingress-service"
+      # [providers.kubernetesingress]
+      #   ingressClass = "traefik-internal"
+      #   namespaces = ["ingress", "ngsa", "tiny"]
+      #   [providers.kubernetesIngress.ingressEndpoint]
+      #     publishedService = "ingress/traefik-ingress-service"
+      [providers.kubernetesCRD]
+        namespaces = ["ngsa"]
     # Enable gzip compression
     [http.middlewares]
       [http.middlewares.gzip-compress.compress]
       [http.middlewares.app-gateway-snet.ipWhiteList]
         sourceRange = ["10.240.4.16/28"]
       [http.middlewares.ngsa-stripprefix.stripPrefix]
-        prefixes = ["/memory", "/cosmos","/tiny"]
+        prefixes = ["/memory", "/cosmos","/tiny", "/canary"]
     [entryPoints]
       [entryPoints.metrics]
         address = ":8082"
@@ -189,7 +191,7 @@ metadata:
     app.kubernetes.io/instance: traefik-ingress-ilb
     aadpodidbinding: podmi-ingress-controller
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik-ingress-ilb

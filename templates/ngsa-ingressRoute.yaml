@@ -1,0 +1,34 @@
+# Middleware definition for ngsa-mock-memory
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ngsa-middleware
+  namespace: ngsa
+spec:
+  stripPrefix:
+    prefixes:
+      - /memory
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ngsa-memory-route
+  namespace: ngsa
+spec:
+  entryPoints:
+    - websecure
+#        address: ":443"
+#    - web:
+#        address: ":80"
+  routes:
+  - match: Host(`$ASB_TLD`) && PathPrefix(`/memory`)
+    kind: Rule
+    middlewares:
+    - name: ngsa-middleware
+      namespace: ngsa
+    services:
+    - name: ngsa-memory
+      kind: Service
+      namespace: ngsa
+      port: 8080
+
