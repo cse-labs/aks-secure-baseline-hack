@@ -7,7 +7,7 @@ if [ -z "$ASB_TEAM_NAME" ]
 then
   echo "Please set ASB_TEAM_NAME before running this script"
 else
-  if [ -f ${ASB_TEAM_NAME}.asb.env ]
+  if [ -f ~/${ASB_TEAM_NAME}.asb.env ]
   then
     if [ "$#" = 0 ] || [ $1 != "-y" ]
     then
@@ -15,21 +15,21 @@ else
 
       if ! [[ $response =~ [yY] ]]
       then
-        echo "Please move or delete ${ASB_TEAM_NAME}.asb.env and rerun the script."
+        echo "Please move or delete ~/${ASB_TEAM_NAME}.asb.env and rerun the script."
         exit 1;
       fi
     fi
   fi
 
-  echo '#!/bin/bash' > ${ASB_TEAM_NAME}.asb.env
-  echo '' >> ${ASB_TEAM_NAME}.asb.env
+  echo '#!/bin/bash' > ~/${ASB_TEAM_NAME}.asb.env
+  echo '' >> ~/${ASB_TEAM_NAME}.asb.env
 
   IFS=$'\n'
 
   for var in $(env | grep -E 'ASB_' | sort | sed "s/=/='/g")
   do
-    echo "export ${var}'" >> ${ASB_TEAM_NAME}.asb.env
+    echo "export ${var}'" >> ~/${ASB_TEAM_NAME}.asb.env
   done
 
-  cat ${ASB_TEAM_NAME}.asb.env
+  cat ~/${ASB_TEAM_NAME}.asb.env
 fi
