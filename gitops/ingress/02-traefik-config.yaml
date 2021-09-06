@@ -5,8 +5,8 @@ metadata:
   namespace: ingress
 spec:
   type: 0
-  resourceID: /subscriptions/3b25180b-416b-4b73-92e2-8668f62075d5/resourceGroups/rg-jftrfk-core/providers/Microsoft.ManagedIdentity/userAssignedIdentities/podmi-ingress-controller
-  clientID: 9731d46f-c381-4c24-ac02-14b8f0511775
+  resourceID: /subscriptions/a65485a4-a61f-4649-b150-13a033545a53/resourceGroups/rg-jftrfk-core/providers/Microsoft.ManagedIdentity/userAssignedIdentities/podmi-ingress-controller
+  clientID: ebe2e999-74c9-4240-b42e-67b2c56b1c1f
 ---
 apiVersion: aadpodidentity.k8s.io/v1
 kind: AzureIdentityBinding
@@ -27,7 +27,7 @@ spec:
   provider: azure
   parameters:
     usePodIdentity: "true"
-    keyvaultName: kv-aks-pxpbfrtojevgq 
+    keyvaultName: kv-aks-kdffusrvh654u 
     objects:  |
       array:
         - |
