@@ -49,7 +49,7 @@ az login
 # verify the correct subscription
 # use az account set -s <sub> to change the sub if required
 # you must be the owner of the subscription
-# tenant ID should be 72f988bf-86f1-41af-91ab-2d7cd011db47 
+# tenant ID should be 72f988bf-86f1-41af-91ab-2d7cd011db47
 az account show -o table
 
 ```
@@ -62,7 +62,7 @@ az account show -o table
 export ASB_CLUSTER_ADMIN_GROUP=asb-hack
 
 # verify you are a member of the security group
-# if you are not a member, please make sure you filled out the Office Form and IM bartr directly
+# if you are not a member, please make sure you filled out the Office Form and ask the security group owner to add you
 az ad group member list -g $ASB_CLUSTER_ADMIN_GROUP  --query [].mailNickname -o table | grep <youralias>
 
 ```
@@ -203,7 +203,7 @@ echo $ASB_CLUSTER_ADMIN_ID
 ```bash
 
 # set GitOps repo
-export ASB_GIT_REPO=$(git remote get-url origin)
+export ASB_GIT_REPO=$(git remote get-url origin | sed -r 's/(git@(.+):(.+)(.git))/https:\/\/\2\/\3/')
 export ASB_GIT_BRANCH=$ASB_TEAM_NAME
 export ASB_GIT_PATH=gitops
 
